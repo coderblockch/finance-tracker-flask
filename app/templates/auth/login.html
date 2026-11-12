@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block body_class %}auth{% endblock %}
+{% block auth_content %}
+  <h1>Sign in</h1>
+  <p class="lede">Use your account to track income and expenses.</p>
+  <form method="post" class="form" novalidate>
+    <label>
+      Username
+      <input type="text" name="username" autocomplete="username" required autofocus>
+    </label>
+    <label>
+      Password
+      <input type="password" name="password" autocomplete="current-password" required>
+    </label>
+    <button type="submit" class="btn btn-primary">Sign in</button>
+  </form>
+  <p class="auth-switch">New here? <a href="{{ url_for('auth.register') }}">Create an account</a></p>
+{% endblock %}

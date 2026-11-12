@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Create an account{% endblock %}
+{% block body_class %}auth{% endblock %}
+{% block auth_content %}
+  <h1>Create an account</h1>
+  <p class="lede">Free to use. Your data stays in your own database.</p>
+  <form method="post" class="form" novalidate>
+    <label>
+      Username
+      <input type="text" name="username" autocomplete="username" minlength="3" required autofocus>
+    </label>
+    <label>
+      Password
+      <input type="password" name="password" autocomplete="new-password" minlength="8" required>
+    </label>
+    <label>
+      Confirm password
+      <input type="password" name="confirm" autocomplete="new-password" minlength="8" required>
+    </label>
+    <button type="submit" class="btn btn-primary">Create account</button>
+  </form>
+  <p class="auth-switch">Already registered? <a href="{{ url_for('auth.login') }}">Sign in</a></p>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Transactions{% endblock %}
+{% block heading %}Transactions{% endblock %}
+{% block lede %}Add, filter, and remove income and expense records.{% endblock %}
+{% block content %}
+  <section class="layout-split">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>All transactions</h2>
+      </div>
+      <form method="get" class="filters">
+        <label>
+          Category
+          <select name="category_id">
+            <option value="">All categories</option>
+            {% for category in categories %}
+              <option value="{{ category.id }}" {{ 'selected' if filter_category == category.id|string else '' }}>{{ category.name }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>
+          Type
+          <select name="type">
+            <option value="">All types</option>
+            <option value="{{ income_value }}" {{ 'selected' if filter_type == income_value else '' }}>Income</option>
+            <option value="{{ expense_value }}" {{ 'selected' if filter_type == expense_value else '' }}>Expense</option>
+          </select>
+        </label>
+        <button type="submit" class="btn btn-secondary">Filter</button>
+        {% if filter_category or filter_type %}
+          <a class="btn btn-ghost" href="{{ url_for('main.transactions') }}">Clear</a>
+        {% endif %}
+      </form>
+
+      {% if transactions %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th class="num">Amount</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for txn in transactions %}
+                <tr>
+                  <td>{{ txn.occurred_on.isoformat() }}</td>
+                  <td>{{ txn.title }}</td>
+                  <td>{{ txn.category.name }}</td>
+                  <td>{{ "Income" if txn.movement_type == "Ingreso" else "Expense" }}</td>
+                  <td class="num {{ 'income' if txn.amount > 0 else 'expense' }}">{{ "%.2f"|format(txn.amount) }}</td>
+                  <td class="actions">
+                    <form method="post" action="{{ url_for('main.delete_transaction', txn_id=txn.id) }}" onsubmit="return confirm('Delete this transaction?');">
+                      <button type="submit" class="btn btn-danger-text">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="empty">No transactions match this filter yet.</p>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Add a transaction</h2>
+      </div>
+      {% if categories %}
+        <form method="post" class="form" novalidate>
+          <label>
+            Title
+            <input type="text" name="title" maxlength="120" required placeholder="e.g. Groceries">
+          </label>
+          <label>
+            Amount
+            <input type="number" name="amount" step="0.01" min="0.01" required placeholder="0.00">
+          </label>
+          <label>
+            Category
+            <select name="category_id" required>
+              <option value="" disabled selected>Choose a category</option>
+              {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <label>
+            Type
+            <select name="movement_type" required>
+              <option value="{{ income_value }}">Income</option>
+              <option value="{{ expense_value }}">Expense</option>
+            </select>
+          </label>
+          <label>
+            Date
+            <input type="date" name="occurred_on">
+          </label>
+          <button type="submit" class="btn btn-primary">Save transaction</button>
+        </form>
+      {% else %}
+        <p class="empty">Add a category first, then come back to record transactions.</p>
+        <p><a class="btn btn-primary" href="{{ url_for('main.categories') }}">Add a category</a></p>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

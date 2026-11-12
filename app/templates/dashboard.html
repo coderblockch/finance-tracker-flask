@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block heading %}Dashboard{% endblock %}
+{% block lede %}A snapshot of your income, expenses, and recent activity.{% endblock %}
+{% block content %}
+  <section class="stat-grid">
+    <article class="stat-card">
+      <p class="stat-label">Balance</p>
+      <p class="stat-value">{{ "%.2f"|format(balance) }}</p>
+    </article>
+    <article class="stat-card income">
+      <p class="stat-label">Income</p>
+      <p class="stat-value">{{ "%.2f"|format(income) }}</p>
+    </article>
+    <article class="stat-card expense">
+      <p class="stat-label">Expenses</p>
+      <p class="stat-value">{{ "%.2f"|format(expense|abs) }}</p>
+    </article>
+  </section>
+
+  <section class="meta-row">
+    <p>{{ transaction_count }} transaction{{ 's' if transaction_count != 1 else '' }} · {{ category_count }} categor{{ 'ies' if category_count != 1 else 'y' }}</p>
+    <p><a class="btn btn-primary" href="{{ url_for('main.transactions') }}">Add a transaction</a></p>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Recent transactions</h2>
+      <a href="{{ url_for('main.transactions') }}">View all</a>
+    </div>
+    {% if recent %}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Type</th>
+              <th class="num">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for txn in recent %}
+              <tr>
+                <td>{{ txn.occurred_on.isoformat() }}</td>
+                <td>{{ txn.title }}</td>
+                <td>{{ txn.category.name }}</td>
+                <td>{{ "Income" if txn.movement_type == "Ingreso" else "Expense" }}</td>
+                <td class="num {{ 'income' if txn.amount > 0 else 'expense' }}">{{ "%.2f"|format(txn.amount) }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="empty">No transactions yet. Add a category, then record your first income or expense.</p>
+    {% endif %}
+  </section>
+{% endblock %}

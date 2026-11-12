@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Finance Tracker{% endblock %} · David Jimenez</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body class="{% block body_class %}app{% endblock %}">
+    {% if g.user %}
+    <div class="shell">
+      <aside class="sidebar">
+        <a class="brand" href="{{ url_for('main.dashboard') }}">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" width="32" height="32">
+              <rect x="2" y="6" width="28" height="20" rx="4" fill="currentColor" opacity="0.15"/>
+              <path d="M6 16h20M16 9v14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span>
+            <strong>Finance Tracker</strong>
+            <small>Python · Flask · SQL</small>
+          </span>
+        </a>
+        <nav class="nav">
+          <a href="{{ url_for('main.dashboard') }}" class="{{ 'active' if request.endpoint == 'main.dashboard' else '' }}">Dashboard</a>
+          <a href="{{ url_for('main.transactions') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('main.transactions') else '' }}">Transactions</a>
+          <a href="{{ url_for('main.categories') }}" class="{{ 'active' if request.endpoint == 'main.categories' else '' }}">Categories</a>
+          <a href="{{ url_for('main.summary') }}" class="{{ 'active' if request.endpoint == 'main.summary' else '' }}">Summary</a>
+        </nav>
+        <div class="sidebar-foot">
+          <p class="signed-in">Signed in as <strong>{{ g.user.username }}</strong></p>
+          <a class="btn btn-ghost" href="{{ url_for('auth.logout') }}">Sign out</a>
+        </div>
+      </aside>
+      <div class="main">
+        <header class="topbar">
+          <h1>{% block heading %}Dashboard{% endblock %}</h1>
+          <p class="lede">{% block lede %}{% endblock %}</p>
+        </header>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flashes">
+              {% for category, message in messages %}
+                <li class="flash flash-{{ category }}">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        <main>
+          {% block content %}{% endblock %}
+        </main>
+        <footer class="page-foot">
+          Built by David Jimenez · Based on the DUAD bootcamp Gestor Finanzas project
+        </footer>
+      </div>
+    </div>
+    {% else %}
+    <div class="auth-shell">
+      <div class="auth-card">
+        <a class="brand brand-auth" href="{{ url_for('auth.login') }}">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" width="32" height="32">
+              <rect x="2" y="6" width="28" height="20" rx="4" fill="currentColor" opacity="0.15"/>
+              <path d="M6 16h20M16 9v14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span>
+            <strong>Finance Tracker</strong>
+            <small>A personal budget app</small>
+          </span>
+        </a>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flashes">
+              {% for category, message in messages %}
+                <li class="flash flash-{{ category }}">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        {% block auth_content %}{% endblock %}
+      </div>
+    </div>
+    {% endif %}
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

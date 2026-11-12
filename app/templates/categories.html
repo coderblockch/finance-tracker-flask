@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Categories{% endblock %}
+{% block heading %}Categories{% endblock %}
+{% block lede %}Group transactions so summaries stay easy to read.{% endblock %}
+{% block content %}
+  <section class="layout-split">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Your categories</h2>
+      </div>
+      {% if categories %}
+        <ul class="category-list">
+          {% for category in categories %}
+            <li>{{ category.name }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="empty">No categories yet. Add one such as Salary, Food, or Rent.</p>
+      {% endif %}
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Add a category</h2>
+      </div>
+      <form method="post" class="form" novalidate>
+        <label>
+          Name
+          <input type="text" name="name" maxlength="80" required placeholder="e.g. Food">
+        </label>
+        <button type="submit" class="btn btn-primary">Save category</button>
+      </form>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Summary{% endblock %}
+{% block heading %}Summary{% endblock %}
+{% block lede %}Totals by category and by month, computed with SQL GROUP BY queries.{% endblock %}
+{% block content %}
+  <section class="stat-grid">
+    <article class="stat-card">
+      <p class="stat-label">Balance</p>
+      <p class="stat-value">{{ "%.2f"|format(balance) }}</p>
+    </article>
+    <article class="stat-card income">
+      <p class="stat-label">Income</p>
+      <p class="stat-value">{{ "%.2f"|format(income) }}</p>
+    </article>
+    <article class="stat-card expense">
+      <p class="stat-label">Expenses</p>
+      <p class="stat-value">{{ "%.2f"|format(expense|abs) }}</p>
+    </article>
+  </section>
+
+  <section class="layout-split">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>By category</h2>
+      </div>
+      {% if by_category %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th class="num">Income</th>
+                <th class="num">Expenses</th>
+                <th class="num">Net</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in by_category %}
+                <tr>
+                  <td>{{ row.category }}</td>
+                  <td class="num income">{{ "%.2f"|format(row.income) }}</td>
+                  <td class="num expense">{{ "%.2f"|format(row.expense|abs) }}</td>
+                  <td class="num">{{ "%.2f"|format(row.net) }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="empty">Add categories and transactions to see this breakdown.</p>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>By month</h2>
+      </div>
+      {% if by_month %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th class="num">Income</th>
+                <th class="num">Expenses</th>
+                <th class="num">Net</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in by_month %}
+                <tr>
+                  <td>{{ row.month }}</td>
+                  <td class="num income">{{ "%.2f"|format(row.income) }}</td>
+                  <td class="num expense">{{ "%.2f"|format(row.expense|abs) }}</td>
+                  <td class="num">{{ "%.2f"|format(row.net) }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="empty">No monthly totals yet.</p>
+      {% endif %}
+    </div>
+  </section>
+
+  {% if by_month %}
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Income vs. expenses by month</h2>
+      </div>
+      <canvas id="month-chart" height="120"></canvas>
+    </section>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  {% if by_month %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script>
+      const labels = {{ by_month | map(attribute='month') | list | tojson }};
+      const income = {{ by_month | map(attribute='income') | list | tojson }};
+      const expenses = {{ by_month | map(attribute='expense') | list | tojson }}.map((value) => Math.abs(value));
+      new Chart(document.getElementById("month-chart"), {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            { label: "Income", data: income, backgroundColor: "#0e7c66" },
+            { label: "Expenses", data: expenses, backgroundColor: "#c0392b" }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: "bottom" } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    </script>
+  {% endif %}
+{% endblock %}
