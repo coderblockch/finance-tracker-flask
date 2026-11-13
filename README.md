@@ -1,5 +1,9 @@
 # Finance Tracker
 
+**Live Demo:** [https://finance-tracker-kln2.onrender.com](https://finance-tracker-kln2.onrender.com)
+
+The free Render plan sleeps after inactivity, so the first load may take about 50 seconds.
+
 A small personal-finance web app built with **Python, Flask, SQLite, HTML, and CSS**. Create an account, add categories, record income and expenses, and view totals on a dashboard and a monthly/category summary.
 
 This project is based on my DUAD bootcamp **Gestor Finanzas** project, originally a desktop app with in-memory logic and JSON persistence. This version keeps that domain model (categories, signed income/expense amounts, and the same totals/balance rules) and turns it into a multi-user web app with a SQLite database, login, and tests.
