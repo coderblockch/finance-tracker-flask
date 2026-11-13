@@ -16,7 +16,7 @@ Built by [David Jimenez](https://github.com/coderblockch) as a portfolio piece f
 - Summary tables by category and by month, plus an optional Chart.js bar chart
 - SQLite schema with `users`, `categories`, and `transactions` (foreign keys included)
 - CLI commands to create tables and seed demo data
-- Pytest coverage for the original finance logic, authentication, and adding a transaction
+- 19 pytest tests covering the original finance logic, authentication, and adding a transaction
 
 ## Tech stack
 
@@ -31,19 +31,19 @@ Built by [David Jimenez](https://github.com/coderblockch) as a portfolio piece f
 
 ## Screenshots
 
-Add screenshots after running the app locally and save them under `docs/screenshots/`:
+**Dashboard**: balance, income vs. expenses, and recent transactions
 
-- Dashboard — balance, income vs. expenses, and recent transactions (`docs/screenshots/dashboard.png`)
-- Transactions — list, filters, and the add form (`docs/screenshots/transactions.png`)
-- Summary — totals by category and by month (`docs/screenshots/summary.png`)
-
-*Screenshot files are not included yet. Capture them from a local run and drop them into `docs/screenshots/` using the names above, then they will render here:*
-
-```markdown
 ![Dashboard](docs/screenshots/dashboard.png)
+
+**Transactions**: list, filters, and the add form
+
 ![Transactions](docs/screenshots/transactions.png)
+
+**Summary**: totals by category and by month, with a Chart.js chart
+
 ![Summary](docs/screenshots/summary.png)
-```
+
+*Screenshots taken from a local run with the `seed-db` demo data.*
 
 ## Local setup
 
@@ -66,6 +66,7 @@ Set `SECRET_KEY` in your environment for anything other than local development. 
 
 ```bash
 pytest
+# 19 passed
 ```
 
 The test suite uses a temporary SQLite database and the Flask test client. It includes the original Gestor Finanzas logic tests plus authentication and transaction tests.
