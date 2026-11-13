@@ -113,18 +113,14 @@ finance-tracker-flask/
 3. Render will install dependencies from `requirements.txt` and start the app with Gunicorn:
 
    ```text
-   gunicorn "app:create_app()"
+   gunicorn --bind 0.0.0.0:$PORT "app:create_app()"
    ```
 
 4. Set a strong `SECRET_KEY` environment variable (the blueprint can generate one). Do not use the local `"dev"` default in production.
-5. After the first deploy, open a Render shell and initialize the database:
 
-   ```bash
-   flask --app app init-db
-   flask --app app seed-db    # optional
-   ```
+Tables are created automatically on startup, so you do not need to run `flask --app app init-db` on Render. You can optionally run `flask --app app seed-db` in a Render shell if you want the demo user (`demo` / `demodemo`).
 
-SQLite on Render's free plan lives on an ephemeral disk, so data can be lost on redeploy. For a longer-lived demo, add a persistent disk and mount it at the app's `instance/` directory (for example `/opt/render/project/src/instance`), or switch `DATABASE_URL` to a managed Postgres database later.
+**SQLite limitation:** on Render's free plan the database lives on an ephemeral disk. It is wiped when the service sleeps, restarts, or redeploys, so you may need to register again after a reset. For lasting data, switch `DATABASE_URL` to a managed Postgres database (a persistent disk is not available on the free plan).
 
 A `Procfile` is included as well for platforms that look for one.
 

@@ -33,6 +33,10 @@ def create_app(test_config=None):
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
 
+    # Create tables on startup so a fresh SQLite file (e.g. Render free tier) works.
+    with app.app_context():
+        db.create_all()
+
     app.cli.add_command(init_db_command)
     app.cli.add_command(seed_db_command)
 
